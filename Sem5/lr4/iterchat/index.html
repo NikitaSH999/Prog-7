@@ -1,0 +1,152 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            body {
+                padding: 0px;
+                margin: 0px;
+                background-color: rgb(250, 211, 217);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            #form {
+                display: flex;
+                justify-content: space-between;
+                margin: 10px 0px;
+                width: 70%;
+            }
+            li {
+                list-style-type: none;
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+            }
+            ul {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 70%;
+                margin-left: 0;
+                padding-left: 0;
+            }
+            #container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 80%;
+                height: 100%;
+                background-color: linen;
+                justify-content: flex-end;
+            }
+            #form-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+            }
+            #template {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: -webkit-calc(100% + 20px);
+                overflow-y: auto;
+                max-height: 90%;
+            }
+            .name {
+                margin: 5px;
+                padding: 5px;
+                font-size: 16px;
+                background-color: rgb(252, 208, 215);
+                border: 2px solid lightpink;
+                width: 25%;
+            }
+            .message {
+                margin: 5px;
+                padding: 5px;
+                font-size: 14px;
+                background-color: rgb(197, 241, 255);
+                border: 2px solid #b0dfff;
+                width: 75%;
+            }
+            #mess {
+                width: 95%;
+                margin: 5px;
+                margin-left: 0px;
+                height: 30px;
+            }
+            #send-mess {
+                width: 5%;
+                margin: 5px;
+                height: 30px;
+                margin-right: 0px;
+            }
+            ::-webkit-scrollbar {
+                width: 10px;
+            }
+            ::-webkit-scrollbar-track {
+                background-color: rgba(221, 204, 215, 0.3);
+                border-radius: 10px;
+                border: 1px solid rgb(226, 209, 220);
+            }
+            
+            ::-webkit-scrollbar-thumb {
+                border-radius: 10px;
+                background-color: rgba(255, 232, 246, 0.5);
+                border: 1px solid rgb(226, 209, 220);
+            }
+        </style>
+        <title>Чат</title>
+    </head>
+    <body>
+        <div id="container">
+            <div id="template">
+                <ul id="list"></ul>
+            </div>
+            <div id="form-container">
+                <form id="form">
+                    <input id="mess" placeholder="Введите сообщение">
+                    <input id="send-mess" type="submit" value="&#10148;"/>
+                </form>
+            </div>
+        </div>
+        <script>
+            let name;
+            const messagesList = document.getElementById('list');
+            const form = document.getElementById('form');
+            const mess = document.getElementById('mess');
+
+            const webSocket = new WebSocket('ws://localhost:8888/websocket');
+
+            webSocket.onopen = event => {
+                webSocket.send('{"request": "get name"}');
+                webSocket.send('{"request": "update"}');
+            };
+
+            webSocket.onmessage = event => {
+                const response = JSON.parse(event.data);
+                console.log(response);
+                if (response.setName) {
+                    name = response.setName;
+                }
+                if (response.messages) {
+                    messagesList.innerHTML = response.messages;
+                    messagesList.scrollIntoView({block: "end", behavior: "auto"});
+                }
+                if (response.getUpdate) {
+                    webSocket.send('{"request": "update"}');
+                }
+            };
+
+            form.addEventListener('submit', (event) => {
+                if (mess.value) {
+                    webSocket.send(`{"request": "add message", "name": "${name}", "message": "${mess.value}"}`);
+                    mess.value = '';
+                }
+                event.preventDefault();
+            });
+        </script>
+    </body>
+</html>

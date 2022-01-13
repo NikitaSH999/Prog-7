@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            table {
+                border-collapse: collapse;
+            }
+            td, th {
+                border: solid 1px #000;
+                padding: 5px;
+                margin: 0px;
+                text-align: center;
+            }
+        </style>
+        <title>Статистика</title>
+    </head>
+    <body>
+        <div>
+            <p>
+                <span>Всего пользователей в чате: </span>
+                <span id="all-users">0</span>
+            </p>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID пользователя</th>
+                    <th>Количество <br/> сообщений</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </body>
+    <script>
+        const count = document.getElementById('all-users');
+        const tBody = document.querySelector('tbody');
+
+        const webSocket = new WebSocket('ws://localhost:8888/websocket');
+
+        webSocket.onopen = event => {
+            webSocket.send('{"request": "stat"}')
+        };
+
+        webSocket.onmessage = event => {
+            const response = JSON.parse(event.data);
+            console.log(response);
+            if (response.stat) {
+                count.innerHTML = response.allUsers;
+                let rows = '';
+                for (key in response) {
+                    if (key == "stat" || key == "allUsers") {continue;};
+                    rows += `<tr><td>${key}</td><td>${response[key]}</td></tr>`; 
+                };
+                tBody.innerHTML = rows;
+            };
+        };
+    </script>
+</html>

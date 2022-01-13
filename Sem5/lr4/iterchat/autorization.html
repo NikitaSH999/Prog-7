@@ -1,0 +1,51 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            body {
+                padding: 0px;
+                margin: 0px;
+                background-color: rgba(238, 255, 253, 0.3);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            #container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            h1 {
+                color: #7bcaff;
+            }
+        </style>
+        <title>Авторизация</title>
+    </head>
+    <body>
+        <div id="container">
+            <h1>Авторизация</h1>
+            <form id="autorization">
+                <input id="name" placeholder="Введите свое имя">
+                <input type="submit" value="Присоединиться к чату">
+            </form>
+        </div>
+        <script>
+            const autorization = document.getElementById('autorization');
+            const name = document.getElementById('name');
+
+            const webSocket = new WebSocket('ws://localhost:8888/websocket');
+
+            autorization.addEventListener('submit', (event) => {
+                if (name.value) {
+                    webSocket.send(`{"name": "${name.value}"}`)
+                }
+                event.preventDefault();
+                document.location.pathname = '/index';
+            });
+
+        </script>
+    </body>
+</html>

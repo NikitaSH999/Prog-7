@@ -1,0 +1,11 @@
+README.md
+setup.py
+useful-pkg-iamgo100/__init__.py
+useful-pkg-iamgo100/__main__.py
+useful-pkg-iamgo100/foo.py
+useful-pkg-iamgo100/boo/__init__.py
+useful-pkg-iamgo100/boo/bar.py
+useful_pkg_iamgo100.egg-info/PKG-INFO
+useful_pkg_iamgo100.egg-info/SOURCES.txt
+useful_pkg_iamgo100.egg-info/dependency_links.txt
+useful_pkg_iamgo100.egg-info/top_level.txt

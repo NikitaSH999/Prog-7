@@ -1,0 +1,7 @@
+https://test.pypi.org/project/useful-pkg-iamgo100/
+
+comands:
+> python setup.py sdist bdist_wheel
+> python -m twine upload --repository testpypi dist/*
+username: iamgo100
+password: test.pypi.org
