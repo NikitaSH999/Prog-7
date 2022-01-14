@@ -6,7 +6,6 @@ from functools import partial
 
 def func(x):
     return float(math.cos(x) + math.sin(x))
-
 def integrate(f, a, b, *, n_iter = 10000):
     h = (b - a) / n_iter
     i = a + h
@@ -17,12 +16,11 @@ def integrate(f, a, b, *, n_iter = 10000):
     sum += (f(b) + f(a)) / 2
     sum *= h
     return float(sum)
-
-def integrate_async(f, a, b, n_jobs, *, n_iter=10000):
-    executor = ProcessPoolExecutor(max_workers = n_jobs)
-    spawn = partial(executor.submit, integrate, f, n_iter = n_iter // n_jobs)
-    step = (b - a) / n_jobs
-    fs = [spawn(a + i * step, a + (i + 1) * step) for i in range(n_jobs)]
+def integrate_async(f, a, b, job, *, n_iter=10000):
+    ex = ProcessPoolExecutor(max_workers = job)
+    sp = partial(ex.submit, integrate, f, n_iter = n_iter // job)
+    st = (b - a) / job
+    fs = [sp(a + i * st, a + (i + 1) * st) for i in range(job)]
     return sum(f.result() for f in as_completed(fs))
 
 if __name__ == "__main__":
